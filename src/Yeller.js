@@ -2,9 +2,9 @@
 (function(self) {
   var ErrorFormatter = {};
   ErrorFormatter.format = function(options) {
-    var tracekitResult = TraceKit.computeStackTrace(options.error);
+    var tracekitResult = options.tracekit_info || TraceKit.computeStackTrace(options.error);
     var result = {
-      type: options.type || options.error.name,
+      type: options.type || options.error.name || tracekitResult.name || 'Error',
       message: options.error.message,
       stacktrace: ErrorFormatter.formatStackTrace(tracekitResult),
       url: options.url || tracekitResult.url,
@@ -31,6 +31,10 @@
     return out;
   };
 
+  var getRandomInt = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
   var crossDomainPost = function (token, payload) {
     var iframe = document.createElement('iframe');
     var uniqueNameOfFrame = 'yeller' + (new Date().getTime());
@@ -40,7 +44,7 @@
 
     var form = document.createElement('form');
     form.target = uniqueNameOfFrame;
-    form.action = "https://collector1.yellerapp.com/" + token;
+    form.action = "https://collector" + getRandomInt(1, 5) + ".yellerapp.com/" + token;
     form.method = 'POST';
 
     var input = document.createElement('input');
@@ -59,6 +63,7 @@
     this.location = options.location;
     this.token = options.token;
     this.ignored_environments = options.ignored_environments || ['development', 'test'];
+    this.eventsRemaining = 10;
   };
 
   Yeller.prototype.report = function (err, options) {
@@ -79,12 +84,18 @@
       for (var k in err) {
         if (err.hasOwnProperty(k)) {
           var value = err[k];
-          withClientParams["custom-data"][k] = v;
+          withClientParams['custom-data'] = withClientParams['custom-data'] || {};
+          withClientParams["custom-data"][k] = value;
         }
       }
     }
     withClientParams.error = err;
+    this.eventsRemaining = this.eventsRemaining - 1;
+    if (0 >= this.eventsRemaining) {
+      return false;
+    }
     this.transport(this.token, ErrorFormatter.format(withClientParams));
+    return true;
   };
 
   Yeller.prototype.fillInPerClientParams = function(client, options) {
@@ -100,7 +111,23 @@
   };
 
   Yeller.configure = function (options) {
-    return new Yeller(crossDomainPost, options || {});
+    Yeller.client = new Yeller(crossDomainPost, options || {});
+    self.TraceKit = self.TraceKit.noConflict();
+    if (options.automaticCatch !== false) {
+      self.TraceKit.collectWindowErrors = true;
+      self.TraceKit.report.subscribe(function(tracekitInfo) {
+        Yeller.client.report(
+          {name: tracekitInfo.name, message: tracekitInfo.message},
+          {tracekit_info: tracekitInfo}
+          );
+      });
+
+    }
+    return Yeller.client;
+  };
+
+  Yeller.report = function (err, options) {
+    return Yeller.client.report(err, options);
   };
   self.Yeller = Yeller;
   self.Yeller.ErrorFormatter = ErrorFormatter;
