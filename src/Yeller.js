@@ -35,7 +35,13 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+  var crossDomainPendings = [];
+
   var crossDomainPost = function (token, payload) {
+    if (!document.body) {
+      crossDomainPendings.push({token: token, payload: payload});
+      return;
+    }
     var iframe = document.createElement('iframe');
     var uniqueNameOfFrame = 'yeller' + (new Date().getTime());
     document.body.appendChild(iframe);
@@ -121,7 +127,6 @@
           {tracekit_info: tracekitInfo}
           );
       });
-
     }
     return Yeller.client;
   };
@@ -129,6 +134,13 @@
   Yeller.report = function (err, options) {
     return Yeller.client.report(err, options);
   };
+
+  window.addEventListener('load', function() {
+    for (var i in crossDomainPendings) {
+      var pendingRequest = crossDomainPendings[i];
+      crossDomainPost(pendingRequest.token, pendingRequest.payload);
+    }
+  });
   self.Yeller = Yeller;
   self.Yeller.ErrorFormatter = ErrorFormatter;
   self.Yeller.CrossDomainTransport = crossDomainPost;
