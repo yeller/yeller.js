@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+mkdir -p tmp
+echo '' > tmp/yeller.js
+uglifyjs2 lib/tracekit.js src/Yeller.js --compress -o tmp/yeller.js
+echo "SIZE: `wc -c tmp/yeller.js`"

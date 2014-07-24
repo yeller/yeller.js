@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+. .env
+script/build
+
+s3cmd -P sync tmp/yeller.js s3://yeller-js
+curl -X POST --header "Fastly-Key: $FASTLY_API_KEY" "https://api.fastly.com/service/$FASTLY_SERVICE/purge_all"
