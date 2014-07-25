@@ -5,7 +5,8 @@ This library gives you instant notification of errors in your site's JavaScript.
 ### BETA
 
 This is a beta version, so the instructions aren't fully integrated into yeller's
-onboarding yet.
+onboarding yet. It's been tested a bunch, and it's ready for production use,
+just the onboarding flow isn't quite there yet.
 
 ## How to Install
 
