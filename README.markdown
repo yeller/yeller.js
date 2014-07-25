@@ -2,6 +2,11 @@
 
 This library gives you instant notification of errors in your site's JavaScript.
 
+### BETA
+
+This is a beta version, so the instructions aren't fully integrated into yeller's
+onboarding yet.
+
 ## How to Install
 
 Include yeller.js from our CDN in the `<head>` tag of your site, before all
