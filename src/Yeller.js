@@ -1,5 +1,12 @@
 /*jshint scripturl:true*/
 (function(self) {
+  var get_browser = function() {
+    var result = {
+      name: bowser.name,
+      version: bowser.version
+    };
+    return result;
+  };
   var ErrorFormatter = {};
   ErrorFormatter.format = function(options) {
     var tracekitResult = options.tracekit_info || TraceKit.computeStackTrace(options.error);
@@ -18,6 +25,10 @@
     }
     if (options.custom_data) {
       result['custom-data'] = options.custom_data;
+      result['custom-data'].browser = get_browser();
+    } else {
+      result['custom-data'] = {};
+      result['custom-data'].browser = get_browser();
     }
     return result;
   };
