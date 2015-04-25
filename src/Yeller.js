@@ -138,6 +138,7 @@
     self.TraceKit = self.TraceKit.noConflict();
     if (options.automaticCatch !== false) {
       self.TraceKit.collectWindowErrors = true;
+      self.TraceKit.remoteFetching = false;
       self.TraceKit.report.subscribe(function(tracekitInfo) {
         Yeller.client.report(
           {name: tracekitInfo.name, message: tracekitInfo.message},
