@@ -37,7 +37,13 @@
     var out = [];
     for (var i in stacktrace.stack) {
       var frame = stacktrace.stack[i];
-      out.push([frame.url.toString(), frame.line.toString(), frame.func.toString()]);
+      var lineCol = "";
+      if (frame.column) {
+          lineCol += frame.line.toString() + ":" + frame.column.toString();
+      } else {
+          lineCol += frame.line.toString();
+      }
+      out.push([frame.url.toString(), lineCol, frame.func.toString()]);
     }
     return out;
   };
