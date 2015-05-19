@@ -25,10 +25,22 @@
     }
     if (options.custom_data) {
       result['custom-data'] = options.custom_data;
-      result['custom-data'].browser = get_browser();
     } else {
       result['custom-data'] = {};
-      result['custom-data'].browser = get_browser();
+    }
+    return ErrorFormatter.addCustomData(result);
+  };
+
+  ErrorFormatter.addCustomData = function (result) {
+    result['custom-data'].browser = get_browser();
+    if (document.readyState) {
+      result['custom-data'].browser = document.readyState;
+    }
+    if (document.referrer) {
+      result['custom-data'].referrer = document.referrer;
+    }
+    if (window.history && window.history.state) {
+      result['custom-data'].history = JSON.stringify(window.history.state);
     }
     return result;
   };
