@@ -145,7 +145,26 @@
     return options;
   };
 
+  Yeller.checkValidOptions = function(options) {
+    if (typeof(options.token) !== 'string') {
+      console.warn('options.token should be a string, but was: ' + options.token);
+      return false;
+    }
+    if (typeof(options.environment || 'production') !== 'string') {
+      console.warn('options.environment should be a string, but was: ' + options.environment);
+      return false;
+    }
+    if (typeof(options.location || 'location') !== 'string') {
+      console.warn('options.location should be a string, but was: ' + options.location);
+      return false;
+    }
+    return true;
+  };
+
   Yeller.configure = function (options) {
+    if (!Yeller.checkValidOptions(options)) {
+      return false;
+    }
     Yeller.client = new Yeller(crossDomainPost, options || {});
     self.TraceKit = self.TraceKit.noConflict();
     if (options.automaticCatch !== false) {
@@ -162,7 +181,12 @@
   };
 
   Yeller.report = function (err, options) {
-    return Yeller.client.report(err, options);
+    if (Yeller.client) {
+      return Yeller.client.report(err, options);
+    } else {
+      console.warn('Yeller client not initialized. Please call Yeller.configure before calling Yeller.report');
+      return false;
+    }
   };
 
   window.addEventListener('load', function() {
