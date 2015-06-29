@@ -1,6 +1,9 @@
 /*jshint scripturl:true*/
 (function(self) {
   var get_browser = function() {
+    if (bowser.name === 'interactive' || bowser.name === 'complete') {
+      return false;
+    }
     var result = {
       name: bowser.name,
       version: bowser.version
@@ -32,7 +35,10 @@
   };
 
   ErrorFormatter.addCustomData = function (result) {
-    result['custom-data'].browser = get_browser();
+    var browser = get_browser();
+    if (browser) {
+      result['custom-data'].browser = browser;
+    }
     if (document.readyState) {
       result['custom-data'].browser = document.readyState;
     }
