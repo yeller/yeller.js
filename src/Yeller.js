@@ -91,11 +91,14 @@
     var input = document.createElement('input');
     input.type = 'hidden';
     input.name = "__payload";
-    input.value = JSON.stringify(payload);
-    form.appendChild(input);
+    var serializedPayload = JSON.stringify(payload);
+    if (payload && serializedPayload !== 'undefined' && token) {
+      input.value = serializedPayload;
+        form.appendChild(input);
 
-    document.body.appendChild(form);
-    form.submit();
+      document.body.appendChild(form);
+      form.submit();
+    }
   };
 
   var Yeller = function (transport, options) {
