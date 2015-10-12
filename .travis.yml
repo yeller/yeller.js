@@ -1,0 +1,4 @@
+before_script:
+  - npm install jshint
+script:
+  - jsint src/Yeller.js
