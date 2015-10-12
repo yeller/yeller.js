@@ -40,7 +40,7 @@
       result['custom-data'].browser = browser;
     }
     if (document.readyState) {
-      result['custom-data'].browser = document.readyState;
+      result['custom-data'].readyState = document.readyState;
     }
     if (document.referrer) {
       result['custom-data'].referrer = document.referrer;
