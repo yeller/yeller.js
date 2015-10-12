@@ -2,4 +2,4 @@ sudo: false
 before_script:
   - npm install jshint
 script:
-  - jsint src/Yeller.js
+  - node_modules/jshint/bin/jshint src/Yeller.js
