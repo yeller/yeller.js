@@ -1,7 +1,7 @@
 /*jshint scripturl:true*/
 (function(self) {
   var get_browser = function() {
-    if (bowser.name === 'interactive' || bowser.name === 'complete') {
+    if (bowser.name === 'interactive' || bowser.name === 'complete' || bowser.name === 'loading') {
       return false;
     }
     var result = {
