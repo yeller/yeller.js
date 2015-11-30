@@ -108,6 +108,7 @@
     this.token = options.token;
     this.ignored_environments = options.ignored_environments || ['development', 'test'];
     this.eventsRemaining = 10;
+    this.filter = options.filter;
   };
 
   Yeller.prototype.report = function (err, options) {
@@ -138,7 +139,11 @@
     if (0 >= this.eventsRemaining) {
       return false;
     }
-    this.transport(this.token, ErrorFormatter.format(withClientParams));
+    var formattedError = ErrorFormatter.format(withClientParams);
+    if (this.filter && !this.filter(formattedError)) {
+      return false;
+    }
+    this.transport(this.token, formattedError);
     return true;
   };
 
