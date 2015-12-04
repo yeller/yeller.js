@@ -66,3 +66,34 @@ try {
 
 Attaching more debugging information gives you powerful diagnosis across all
 your exceptions.
+
+### Transform
+
+Yeller allows you to transform errors before they are sent to the server.
+This means that you can override e.g. user id, even for exceptions caught
+by Yeller's toplevel exception handler (which uses `window.onerror`).
+
+If you want to prevent errors from reaching Yeller's server
+(e.g. maybe they come from third party scripts on your page),
+then simply return `false` from your transform function.
+
+```javascript
+Yeller.configure({
+  token: 'YOUR_API_TOKEN_HERE',
+  environment: 'production'
+  transform: function (error) {
+    error.message = "my error";
+    error.custom_data = {
+      user: {
+        id: 1
+      }
+    }
+  }
+});
+
+try {
+  // your code here
+} catch(error) {
+  Yeller.report(error, { custom_data: { user_id: user.id }});
+}
+```
