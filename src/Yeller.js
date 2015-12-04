@@ -109,6 +109,7 @@
     this.ignored_environments = options.ignored_environments || ['development', 'test'];
     this.eventsRemaining = 10;
     this.filter = options.filter;
+    this.transform = options.transform;
   };
 
   Yeller.prototype.report = function (err, options) {
@@ -143,7 +144,16 @@
     if (this.filter && !this.filter(formattedError)) {
       return false;
     }
-    this.transport(this.token, formattedError);
+    if (this.transform) {
+      try {
+      formattedError = this.transform(formattedError);
+      } catch (e) {
+        console.log("Yeller: caught error in transform: " + e);
+      }
+    }
+    if (formattedError) {
+      this.transport(this.token, formattedError);
+    }
     return true;
   };
 
