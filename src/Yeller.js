@@ -91,7 +91,7 @@
     var input = document.createElement('input');
     input.type = 'hidden';
     input.name = "__payload";
-    var serializedPayload = JSON.stringify(payload);
+    var serializedPayload = yellerBase64.encode(JSON.stringify(payload));
     if (payload && serializedPayload !== 'undefined' && token) {
       input.value = serializedPayload;
         form.appendChild(input);

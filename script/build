@@ -3,5 +3,5 @@
 set -e
 mkdir -p tmp
 echo '' > tmp/yeller.js
-uglifyjs2 lib/tracekit.js lib/bowser.js src/Yeller.js --compress -o tmp/yeller.js
+uglifyjs2 lib/tracekit.js lib/bowser.js lib/base64.js src/Yeller.js --compress -o tmp/yeller.js
 echo "SIZE: `wc -c tmp/yeller.js`"
