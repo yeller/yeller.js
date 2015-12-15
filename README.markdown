@@ -83,11 +83,10 @@ Yeller.configure({
   environment: 'production'
   transform: function (error) {
     error.message = "my error";
-    error.custom_data = {
-      user: {
-        id: 1
-      }
-    }
+    error['custom-data'].user = {
+      id: 1
+    };
+    return error;
   }
 });
 
